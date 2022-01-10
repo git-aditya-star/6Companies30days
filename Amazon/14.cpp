@@ -1,127 +1,186 @@
 // { Driver Code Starts
-#include<stdio.h>
-#include<stdlib.h>
-#include<iostream>
+//Initial Template for C++
+
+#include <bits/stdc++.h>
 using namespace std;
-/* A linked list node */
 
-
-struct Node
-{
+struct Node {
     int data;
-    struct Node *next;
-    
-    Node(int x){
-        data = x;
-        next = NULL;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
     }
-    
 };
 
-struct Node *start = NULL;
 
-/* Function to print nodes in a given linked list */
-void printList(struct Node *node)
-{
-    while(node != NULL)
-    {
-        printf("%d ", node->data);
-        node = node->next;
+Node *buildTree(string str) {
+    // Corner Case
+    if (str.length() == 0 || str[0] == 'N')
+        return NULL;
+
+    // Creating vector of strings from input
+    // string after spliting by space
+    vector<string> ip;
+
+    istringstream iss(str);
+    for (string str; iss >> str;)
+        ip.push_back(str);
+
+    // Create the root of the tree
+    Node *root = new Node(stoi(ip[0]));
+
+    // Push the root to the queue
+    queue<Node *> queue;
+    queue.push(root);
+
+    // Starting from the second element
+    int i = 1;
+    while (!queue.empty() && i < ip.size()) {
+
+        // Get and remove the front of the queue
+        Node *currNode = queue.front();
+        queue.pop();
+
+        // Get the current Node's value from the string
+        string currVal = ip[i];
+
+        // If the left child is not null
+        if (currVal != "N") {
+
+            // Create the left child for the current Node
+            currNode->left = new Node(stoi(currVal));
+
+            // Push it to the queue
+            queue.push(currNode->left);
+        }
+
+        // For the right child
+        i++;
+        if (i >= ip.size())
+            break;
+        currVal = ip[i];
+
+        // If the right child is not null
+        if (currVal != "N") {
+
+            // Create the right child for the current Node
+            currNode->right = new Node(stoi(currVal));
+
+            // Push it to the queue
+            queue.push(currNode->right);
+        }
+        i++;
     }
-    printf("\n");
-    
+
+    return root;
 }
 
-void insert(int n1)
-{
-    int n,value;
-    n=n1;
-    struct Node *temp;
-    
-    for(int i=0;i<n;i++)
-    {
-        cin>>value;
-        if(i==0)
-        {
-            start = new Node(value);
-            temp=start;
-            continue;
-        }
-        else
-        {
-            temp->next = new Node(value);
-            temp=temp->next;
-        }
-    }
-}
 
  // } Driver Code Ends
-/*
-delete n nodes after m nodes
-  The input list will have at least one element  
-  Node is defined as 
+//User function Template for C++
 
-struct Node
-{
-    int data;
-    struct Node *next;
-    
-    Node(int x){
-        data = x;
-        next = NULL;
-    }
-    
-};
-
-*/
-class Solution
-{
-    public:
-    void linkdelete(struct Node  *head, int M, int N)
-    {
-        //Add code here
-        struct Node *root = head;
-        while(root != NULL){
-        for(int i=0;i<M-1;i++){
-            if(root == NULL)
-                break;
-            root = root->next;
+class Solution {
+  public:
+  
+    int findTime(unordered_map<Node *, Node*> &map , Node * target){
+        queue<Node *> q;
+        q.push(target);
+        unordered_map<Node *, int> vis;
+        vis[target] = 1;
+        int time =0;
+        while(!q.empty()){
+            int size = q.size();
+            int fl =0;
+            for(int i=0;i<size;i++){
+                auto node = q.front();
+                q.pop();
+                if(node->left && !vis[node->left]){
+                    fl =1;
+                    vis[node->left] =1;
+                    q.push(node->left);
+                    
+                }
+                if(node->right &&!vis[node->right]){
+                    fl =1;
+                    vis[node->right] = 1;
+                    q.push(node->right);
+                }
+                
+                if(map[node] && !vis[map[node]]){
+                    fl =1;
+                    vis[map[node]] =1;
+                    q.push(map[node]);
+                }
+            }
+            if(fl) time++;
             
         }
+        return time;
+    }
+  
+    
+    Node * getParent(Node *root, unordered_map<Node *, Node*> &map, int start){
         
-        
-        struct Node *temp = root;
-        for(int i=0;i<=N;i++){
-            if(root == NULL)
-                break;
-            root = root->next;
+        queue<Node *> q;
+        q.push(root);
+        Node* res;
+        while(!q.empty()){
+            Node * node = q.front();
+            if(node->data == start) res = node;
+            q.pop();
+            if(node->left){
+            
+                map[node->left] = node;
+                q.push(node->left);
+            }
+            
+            if(node->right){
+                map[node->right] = node;
+                q.push(node->right);
+            }
         }
-        if(temp == NULL)
-            break;
-        temp->next = root;
-        }
+        return res;
+    }
+  
+    int minTime(Node* root, int target) 
+    {
+        // Your code goes here
         
+        unordered_map<Node *, Node*> map;
+        
+        Node * targetNode = getParent(root, map, target);
+        int res = findTime(map, targetNode);
+        return res;
     }
 };
 
-
-
 // { Driver Code Starts.
-int main()
+
+int main() 
 {
-    int t,n1;
-    cin>>t;
-    while (t--) {
-        cin>>n1;
-        int m,n;
-        cin>>m;
-        cin>>n;
-        insert(n1);
-        Solution ob;
-        ob.linkdelete(start,m,n);
-        printList(start);
+    int tc;
+    scanf("%d ", &tc);
+    while (tc--) 
+    {    
+        string treeString;
+        getline(cin, treeString);
+        // cout<<treeString<<"\n";
+        int target;
+        cin>>target;
+        // cout<<target<<"\n";
+
+        Node *root = buildTree(treeString);
+        Solution obj;
+        cout<<obj.minTime(root, target)<<"\n"; 
+
+        cin.ignore();
+
     }
-    
+
+
     return 0;
 }
   // } Driver Code Ends
