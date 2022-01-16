@@ -5,3 +5,9 @@
 
 ## 2 -> Amazon
 <a href= "https://docs.google.com/document/d/1KH9GVaUCET-y5SL5sg6DAnon9XwRRW-sPiyJ2p7FRLs/edit" >Questions</a>
+
+## 3 -> Microsoft
+<a href= "https://docs.google.com/document/d/1sSyOTeZBVJExf0oytLVGk6Z34h1usFm4QRkr1Wb5ouk/edit" >Questions</a>
+
+## 4 -> Adobe
+<a href= "https://docs.google.com/document/d/1cEAe63fC3YMJRwKmCoVOIXFUaFv5LqNXedxaGpaqd6U/edit" >Questions</a>
